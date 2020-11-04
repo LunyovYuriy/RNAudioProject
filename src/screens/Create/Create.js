@@ -23,7 +23,7 @@ const Create = () => {
       backgroundColor: '#fff',
     },
     circleButton: {
-      backgroundColor: '#e0f7fa',
+      backgroundColor: '#e1f5fe',
       width: 100,
       height: 100,
       borderRadius: 150,

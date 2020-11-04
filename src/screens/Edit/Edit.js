@@ -24,12 +24,44 @@ const Edit = ({ route }) => {
   const navigation = useNavigation();
   const [newName, setNewName] = useState('');
   const [leftTrimmerPosition, setLeftTrimmerPosition] = useState(0);
+  const [soundStatus, setSoundStatus] = useState(null);
   const [rightTrimmerPosition, setRightTrimmerPosition] = useState(
     durationInMillis,
   );
+  const [playback] = useState(new Audio.Sound());
+
   const sliderLength = Dimensions.get('window').width - 65;
 
   const outputDirectory = FileSystem.documentDirectory;
+
+  const updateStatus = (status) => {
+    return setSoundStatus(status);
+  };
+
+  const playInterval = async () => {
+    const playTime = rightTrimmerPosition - leftTrimmerPosition;
+    try {
+      await playback.loadAsync({ uri });
+      playback.setOnPlaybackStatusUpdate(updateStatus);
+      await playback.setPositionAsync(leftTrimmerPosition);
+      await playback.playAsync();
+      setTimeout(async () => {
+        await playback.stopAsync();
+        await playback.unloadAsync();
+      }, playTime);
+    } catch (error) {
+      Alert.alert('PLAYBACK ERROR');
+    }
+  };
+
+  const stopPlay = async () => {
+    try {
+      await playback.stopAsync();
+      await playback.unloadAsync();
+    } catch (error) {
+      Alert.alert('PAUSE ERROR');
+    }
+  };
 
   const cutSound = async (inputFile, fileName) => {
     if (!fileName.length) {
@@ -166,6 +198,11 @@ const Edit = ({ route }) => {
           </View>
         )}
       />
+      {soundStatus?.isPlaying ? (
+        <Button title="Stop interval" onPress={() => stopPlay()} />
+      ) : (
+        <Button title="Play interval" onPress={() => playInterval()} />
+      )}
       <Button title="Save" onPress={() => cutSound(uri, newName)} />
     </View>
   );

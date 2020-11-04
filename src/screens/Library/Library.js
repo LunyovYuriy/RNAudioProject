@@ -26,9 +26,13 @@ const Library = () => {
     try {
       await playback.unloadAsync();
       await playback.loadAsync({ uri: currentSound });
-      await playback.setIsLoopingAsync(true);
       await playback.playAsync();
       dispatch(setIsPlaying(id));
+      playback.setOnPlaybackStatusUpdate(({ isPlaying: playing }) => {
+        if (!playing) {
+          dispatch(setIsPlaying(null));
+        }
+      });
     } catch (error) {
       Alert.alert('PLAYBACK ERROR');
     }
@@ -57,7 +61,7 @@ const Library = () => {
       paddingHorizontal: 20,
       paddingVertical: 10,
       marginBottom: 10,
-      backgroundColor: '#e0f7fa',
+      backgroundColor: '#e1f5fe',
       width: '100%',
       flexDirection: 'row',
       justifyContent: 'space-between',
@@ -70,15 +74,25 @@ const Library = () => {
     },
     editBtn: {
       backgroundColor: '#005cb2',
-      marginRight: 15,
+      marginRight: 10,
       borderRadius: 3,
+      height: 30,
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     editBtnText: {
       color: '#fff',
       fontWeight: 'bold',
-      paddingVertical: 5,
       paddingHorizontal: 10,
       textTransform: 'uppercase',
+    },
+    playStopBtn: {
+      height: 30,
+      width: 40,
+      backgroundColor: '#005cb2',
+      borderRadius: 3,
+      justifyContent: 'center',
+      alignItems: 'center',
     },
   });
 
@@ -86,12 +100,7 @@ const Library = () => {
     <ScrollView contentContainerStyle={styles.recordedContainer}>
       <Text style={styles.title}>Your records</Text>
       {records.map(({ id, name, uri, duration, durationInMillis }) => (
-        <Pressable
-          style={styles.recordedItem}
-          key={id}
-          onPress={() => {
-            return isPlaying === id ? stopPlay() : playSound(uri, id);
-          }}>
+        <View style={styles.recordedItem} key={id}>
           <Text>
             {name} - {duration}
           </Text>
@@ -108,13 +117,19 @@ const Library = () => {
               }>
               <Text style={styles.editBtnText}>Edit</Text>
             </Pressable>
-            {isPlaying === id ? (
-              <FontAwesome name="stop" size={25} color="#7f0000" />
-            ) : (
-              <FontAwesome name="play" size={25} color="#004d40" />
-            )}
+            <Pressable
+              style={styles.playStopBtn}
+              onPress={() => {
+                return isPlaying === id ? stopPlay() : playSound(uri, id);
+              }}>
+              {isPlaying === id ? (
+                <FontAwesome name="stop" size={15} color="#fff" />
+              ) : (
+                <FontAwesome name="play" size={15} color="#fff" />
+              )}
+            </Pressable>
           </View>
-        </Pressable>
+        </View>
       ))}
     </ScrollView>
   );
