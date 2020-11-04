@@ -11,7 +11,7 @@ import {
   FLASH_MESSAGE_TYPE,
   recordingSettings,
 } from '../../constants/general';
-import getMMSSFromMillis from '../../utils/getMMSSFromMillis';
+import { getMMSSFromMillis } from '../../utils/helpers';
 import FlashMessage from '../../components/FlashMessage/FlashMessage';
 
 const Create = () => {
@@ -130,6 +130,7 @@ const Create = () => {
         name: `RECORD - ${records.length + 1}`,
         uri: recording.getURI(),
         duration: getMMSSFromMillis(durationMillis),
+        durationInMillis: durationMillis,
       }),
     );
     setSound(recordedSound);
