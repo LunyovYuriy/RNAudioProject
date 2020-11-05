@@ -1,4 +1,4 @@
-package aduio.test.pr;
+package audio.test.project;
 
 import android.os.Bundle;
 

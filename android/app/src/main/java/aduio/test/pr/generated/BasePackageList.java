@@ -1,4 +1,4 @@
-package aduio.test.pr.generated;
+package audio.test.project.generated;
 
 import java.util.Arrays;
 import java.util.List;

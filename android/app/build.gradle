@@ -131,7 +131,7 @@ android {
     }
 
     defaultConfig {
-        applicationId 'aduio.test.pr'
+        applicationId 'audio.test.project'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

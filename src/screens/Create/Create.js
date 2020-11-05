@@ -11,35 +11,10 @@ import {
   FLASH_MESSAGE_TYPE,
   recordingSettings,
 } from '../../constants/general';
+import Layout from '../../layout/Layout';
 import { getMMSSFromMillis } from '../../utils/helpers';
-import FlashMessage from '../../components/FlashMessage/FlashMessage';
 
 const Create = () => {
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: '#fff',
-    },
-    circleButton: {
-      backgroundColor: '#e1f5fe',
-      width: 100,
-      height: 100,
-      borderRadius: 150,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    recordContainer: {
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    timeText: {
-      fontSize: 25,
-      marginTop: 10,
-    },
-  });
-
   useEffect(() => {
     Audio.requestPermissionsAsync();
   }, []);
@@ -127,7 +102,7 @@ const Create = () => {
     dispatch(
       addRecord({
         id: records.length,
-        name: `RECORD - ${records.length + 1}`,
+        name: `Record - ${records.length + 1}`,
         uri: recording.getURI(),
         duration: getMMSSFromMillis(durationMillis),
         durationInMillis: durationMillis,
@@ -139,26 +114,63 @@ const Create = () => {
     dispatch(toggleFlashMessage(true, 'Record saved to your library'));
   };
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      paddingTop: '40%',
+      // justifyContent: 'center',
+      backgroundColor: '#fff',
+      paddingHorizontal: 20,
+    },
+    circleButton: {
+      backgroundColor: '#e1f5fe',
+      width: 100,
+      height: 100,
+      borderRadius: 150,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    recordContainer: {
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    text: {
+      fontSize: 30,
+      marginBottom: 30,
+      height: 80,
+      textAlign: 'center',
+      textAlignVertical: 'center',
+    },
+    timeText: {
+      fontSize: 25,
+      marginTop: 10,
+    },
+  });
+
   return (
-    <View style={styles.container}>
-      <View style={styles.recordContainer}>
-        <Pressable
-          onPress={() => {
-            return isRecording ? stopRecording() : startRecording();
-          }}
-          style={styles.circleButton}>
-          {isRecording ? (
-            <FontAwesome name="stop" size={35} color="#7f0000" />
-          ) : (
-            <FontAwesome name="microphone" size={35} color="#0d47a1" />
-          )}
-        </Pressable>
-        <Text style={styles.timeText}>
-          {timerMinutes}:{timerSeconds}
-        </Text>
+    <Layout>
+      <View style={styles.container}>
+        <View style={styles.recordContainer}>
+          <Text style={styles.text}>
+            {isRecording ? 'Record started' : 'Press button to start recording'}
+          </Text>
+          <Pressable
+            onPress={() => {
+              return isRecording ? stopRecording() : startRecording();
+            }}
+            style={styles.circleButton}>
+            {isRecording ? (
+              <FontAwesome name="stop" size={35} color="#7f0000" />
+            ) : (
+              <FontAwesome name="microphone" size={35} color="#0d47a1" />
+            )}
+          </Pressable>
+          <Text style={styles.timeText}>
+            {timerMinutes}:{timerSeconds}
+          </Text>
+        </View>
       </View>
-      <FlashMessage />
-    </View>
+    </Layout>
   );
 };
 

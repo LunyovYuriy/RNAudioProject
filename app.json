@@ -24,7 +24,7 @@
       "favicon": "./assets/favicon.png"
     },
     "android": {
-      "package": "aduio.test.pr"
+      "package": "audio.test.project"
     }
   }
 }

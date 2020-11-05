@@ -1,4 +1,5 @@
 export const TOGGLE_FLASH_MESSAGE = 'TOGGLE_FLASH_MESSAGE';
 
 export const ADD_RECORD = 'ADD_RECORD';
+export const REMOVE_RECORD = 'REMOVE_RECORD';
 export const SET_IS_PLAYING = 'SET_IS_PLAYING';
