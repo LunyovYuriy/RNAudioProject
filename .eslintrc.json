@@ -39,12 +39,7 @@
     "react/jsx-props-no-spreading": [
       "error",
       {
-        "exceptions": [
-          "TextInput",
-          "TextInputMask",
-          "TabBar",
-          "TabsLayoutBar"
-        ]
+        "exceptions": []
       }
     ]
   }
