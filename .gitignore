@@ -81,3 +81,8 @@ buck-out/
 web-build/
 
 # @end expo-cli
+
+#android-build
+/android/gradle.release.properties
+/android/app/build.release.gradle
+/android/java_pid16131.hprof
