@@ -14,7 +14,7 @@ const FlashMessage = () => {
     if (showFlashMessage) {
       setTimeout(() => {
         dispatch(toggleFlashMessage(false));
-      }, 5000);
+      }, 2000);
     }
   });
 
@@ -38,6 +38,7 @@ const FlashMessage = () => {
       fontSize: 15,
       color: '#fff',
       fontWeight: 'bold',
+      zIndex: 999,
     },
   });
 

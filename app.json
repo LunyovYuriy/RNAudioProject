@@ -17,13 +17,14 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "audio.test.project"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "android": {
-      "package": "aduio.test.pr"
+      "package": "audio.test.project"
     }
   }
 }

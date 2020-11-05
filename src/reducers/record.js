@@ -1,4 +1,8 @@
-import { ADD_RECORD, SET_IS_PLAYING } from '../constants/actionTypes';
+import {
+  ADD_RECORD,
+  REMOVE_RECORD,
+  SET_IS_PLAYING,
+} from '../constants/actionTypes';
 
 function initialState() {
   return {
@@ -14,6 +18,13 @@ export default function record(state = initialState(), action) {
         ...state,
         records: [...state.records, action.record],
       };
+    case REMOVE_RECORD: {
+      const newRecords = state.records.filter((item) => item.id !== action.id);
+      return {
+        ...state,
+        records: newRecords,
+      };
+    }
     case SET_IS_PLAYING:
       return {
         ...state,
