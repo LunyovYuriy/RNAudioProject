@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
-import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Audio } from 'expo-av';
 import { FontAwesome } from '@expo/vector-icons';
 import { addRecord } from '../../actions/record';
@@ -12,7 +12,7 @@ import {
   recordingSettings,
 } from '../../constants/general';
 import Layout from '../../layout/Layout';
-import { getMMSSFromMillis } from '../../utils/helpers';
+import { getMMSSFromMillis, uniqueID } from '../../utils/helpers';
 
 const Create = () => {
   useEffect(() => {
@@ -20,7 +20,6 @@ const Create = () => {
   }, []);
 
   const dispatch = useDispatch();
-  const { records } = useSelector((state) => state.record, shallowEqual);
 
   const [recording, setRecording] = useState(null);
   const [isRecording, setIsRecording] = useState(false);
@@ -98,12 +97,14 @@ const Create = () => {
       rate: 1.0,
       shouldCorrectPitch: true,
     });
-    const { durationMillis } = await recordedSound.getStatusAsync();
+    const { durationMillis, uri } = await recordedSound.getStatusAsync();
+    const splittedUri = uri.split('/');
+    const recordName = splittedUri[splittedUri.length - 1];
     dispatch(
       addRecord({
-        id: records.length,
-        name: `Record - ${records.length + 1}`,
-        uri: recording.getURI(),
+        id: uniqueID(),
+        name: recordName,
+        uri,
         duration: getMMSSFromMillis(durationMillis),
         durationInMillis: durationMillis,
       }),
@@ -118,7 +119,6 @@ const Create = () => {
     container: {
       flex: 1,
       paddingTop: '40%',
-      // justifyContent: 'center',
       backgroundColor: '#fff',
       paddingHorizontal: 20,
     },

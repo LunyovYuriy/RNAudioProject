@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, shallowEqual, useDispatch } from 'react-redux';
 import { Text, StyleSheet, ScrollView, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Audio } from 'expo-av';
 import { FontAwesome } from '@expo/vector-icons';
-import { removeRecord, setIsPlaying } from '../../actions/record';
+import {
+  getRecordFromCache,
+  removeRecord,
+  setIsPlaying,
+} from '../../actions/record';
 import IconButton from '../../components/IconButton/IconButton';
 import { toggleFlashMessage } from '../../actions/general';
 import { FLASH_MESSAGE_TYPE } from '../../constants/general';
@@ -18,6 +22,10 @@ const Library = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const [playback] = useState(new Audio.Sound());
+
+  useEffect(() => {
+    dispatch(getRecordFromCache());
+  }, []);
 
   const playSound = async (currentSound, id) => {
     try {
