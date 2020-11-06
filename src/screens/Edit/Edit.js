@@ -14,8 +14,8 @@ import { RNFFmpeg } from 'react-native-ffmpeg';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import * as FileSystem from 'expo-file-system';
 import { Audio } from 'expo-av';
-import { addRecord } from '../../actions/record';
-import { getMMSSFromMillis, uniqueID } from '../../utils/helpers';
+import { getRecordFromCache } from '../../actions/record';
+import { getMMSSFromMillis } from '../../utils/helpers';
 import IconButton from '../../components/IconButton/IconButton';
 import { toggleFlashMessage } from '../../actions/general';
 import { FLASH_MESSAGE_TYPE } from '../../constants/general';
@@ -36,7 +36,7 @@ const Edit = ({ route }) => {
 
   const sliderLength = Dimensions.get('window').width - 90;
 
-  const outputDirectory = FileSystem.documentDirectory;
+  const outputDirectory = `${FileSystem.cacheDirectory}Audio/`;
 
   const stopPlay = async () => {
     try {
@@ -74,8 +74,7 @@ const Edit = ({ route }) => {
         ),
       );
     } else {
-      const outputName = `${fileName}.m4a`;
-      const outputFile = outputDirectory + outputName;
+      const outputFile = `${outputDirectory}${fileName}.m4a`;
       await RNFFmpeg.executeWithArguments([
         '-i',
         inputFile,
@@ -86,20 +85,9 @@ const Edit = ({ route }) => {
         `${outputFile}`,
         '-y',
       ]);
-      const { sound } = await Audio.Sound.createAsync(
-        { uri: outputFile },
-        { shouldPlay: false, isLooping: false },
-      );
-      const { durationMillis } = await sound.getStatusAsync();
-      dispatch(
-        addRecord({
-          id: uniqueID(),
-          uri: outputFile,
-          name: `${fileName}`,
-          duration: getMMSSFromMillis(durationMillis),
-          durationInMillis: durationMillis,
-        }),
-      );
+
+      dispatch(getRecordFromCache());
+
       Alert.alert('Success', 'Your record successfully edited!', [
         { text: 'Ok!', onPress: () => navigation.goBack() },
       ]);

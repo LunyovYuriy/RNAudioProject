@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, shallowEqual, useDispatch } from 'react-redux';
-import { Text, StyleSheet, ScrollView, View } from 'react-native';
+import { Text, StyleSheet, ScrollView, View, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Audio } from 'expo-av';
 import { FontAwesome } from '@expo/vector-icons';
-import { removeRecord, setIsPlaying } from '../../actions/record';
+import {
+  getRecordFromCache,
+  removeRecord,
+  setIsPlaying,
+} from '../../actions/record';
 import IconButton from '../../components/IconButton/IconButton';
 import { toggleFlashMessage } from '../../actions/general';
 import { FLASH_MESSAGE_TYPE } from '../../constants/general';
@@ -18,6 +22,10 @@ const Library = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const [playback] = useState(new Audio.Sound());
+
+  useEffect(() => {
+    dispatch(getRecordFromCache());
+  }, []);
 
   const playSound = async (currentSound, id) => {
     try {
@@ -42,6 +50,18 @@ const Library = () => {
     } catch (error) {
       dispatch(toggleFlashMessage(true, error, FLASH_MESSAGE_TYPE.error));
     }
+  };
+
+  const deleteRecord = (id, uri) => {
+    Alert.alert('Warning', 'Are you sure want to delete this record?', [
+      {
+        text: 'Yes',
+        onPress: () => dispatch(removeRecord(id, uri)),
+      },
+      {
+        text: 'No',
+      },
+    ]);
   };
 
   const styles = StyleSheet.create({
@@ -113,7 +133,7 @@ const Library = () => {
                   icon="times"
                   backgroundColor="#9f0000"
                   containerStyle={styles.buttonMargin}
-                  onPress={() => dispatch(removeRecord(id))}
+                  onPress={() => deleteRecord(id, uri)}
                 />
                 <IconButton
                   icon="edit"
