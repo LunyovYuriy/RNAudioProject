@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
-import { useDispatch } from 'react-redux';
+import { batch, useDispatch } from 'react-redux';
 import { Audio } from 'expo-av';
 import { FontAwesome } from '@expo/vector-icons';
-import { addRecord } from '../../actions/record';
+import { getRecordFromCache } from '../../actions/record';
 import { toggleFlashMessage } from '../../actions/general';
 import {
   AUDIO_END_RECORDING_MODE,
@@ -12,7 +12,6 @@ import {
   recordingSettings,
 } from '../../constants/general';
 import Layout from '../../layout/Layout';
-import { getMMSSFromMillis, uniqueID } from '../../utils/helpers';
 
 const Create = () => {
   useEffect(() => {
@@ -97,22 +96,14 @@ const Create = () => {
       rate: 1.0,
       shouldCorrectPitch: true,
     });
-    const { durationMillis, uri } = await recordedSound.getStatusAsync();
-    const splittedUri = uri.split('/');
-    const recordName = splittedUri[splittedUri.length - 1];
-    dispatch(
-      addRecord({
-        id: uniqueID(),
-        name: recordName,
-        uri,
-        duration: getMMSSFromMillis(durationMillis),
-        durationInMillis: durationMillis,
-      }),
-    );
+
     setSound(recordedSound);
     setIsRecording(false);
     stopTimer();
-    dispatch(toggleFlashMessage(true, 'Record saved to your library'));
+    batch(() => {
+      dispatch(getRecordFromCache());
+      dispatch(toggleFlashMessage(true, 'Record saved to your library'));
+    });
   };
 
   const styles = StyleSheet.create({

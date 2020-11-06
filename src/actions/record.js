@@ -10,7 +10,13 @@ import { getMMSSFromMillis, uniqueID } from '../utils/helpers';
 
 export const addRecord = (record) => ({ type: ADD_RECORD, record });
 export const setRecords = (records) => ({ type: SET_RECORDS, records });
-export const removeRecord = (id) => ({ type: REMOVE_RECORD, id });
+export const removeRecord = (id, uri) => {
+  return (dispatch) => {
+    FileSystem.deleteAsync(uri).then(() => {
+      dispatch({ type: REMOVE_RECORD, id });
+    });
+  };
+};
 export const setIsPlaying = (id) => ({ type: SET_IS_PLAYING, id });
 export const getRecordFromCache = () => {
   return async (dispatch) => {

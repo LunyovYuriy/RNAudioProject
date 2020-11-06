@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, shallowEqual, useDispatch } from 'react-redux';
-import { Text, StyleSheet, ScrollView, View } from 'react-native';
+import { Text, StyleSheet, ScrollView, View, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Audio } from 'expo-av';
 import { FontAwesome } from '@expo/vector-icons';
@@ -50,6 +50,18 @@ const Library = () => {
     } catch (error) {
       dispatch(toggleFlashMessage(true, error, FLASH_MESSAGE_TYPE.error));
     }
+  };
+
+  const deleteRecord = (id, uri) => {
+    Alert.alert('Warning', 'Are you sure want to delete this record?', [
+      {
+        text: 'Yes',
+        onPress: () => dispatch(removeRecord(id, uri)),
+      },
+      {
+        text: 'No',
+      },
+    ]);
   };
 
   const styles = StyleSheet.create({
@@ -121,7 +133,7 @@ const Library = () => {
                   icon="times"
                   backgroundColor="#9f0000"
                   containerStyle={styles.buttonMargin}
-                  onPress={() => dispatch(removeRecord(id))}
+                  onPress={() => deleteRecord(id, uri)}
                 />
                 <IconButton
                   icon="edit"
